@@ -57,22 +57,50 @@ class TrafficLights extends StatelessWidget {
   }
 }
 
+class TrafficLightColor extends StatelessWidget {
+  TrafficLightColor({color, super.key});
+  TrafficLight color = TrafficLight.none;
+  @override
+  Widget build(BuildContext context) {
+    return LightCircle();
+  }
+}
+
 class LightCircle extends CustomPaint {
-  LightCircle({super.key}) : super(painter: LightCirclePainter());
+  LightCircle({color, super.key}) : super(painter: LightCirclePainter(color));
 
   @override
   Size get size => Size(40, 40);
 }
 
 class LightCirclePainter extends CustomPainter {
+  LightCirclePainter(this.color);
+  TrafficLight color;
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
       ..color = Colors.black
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
-
     canvas.drawCircle(Offset(20, 20), 20, paint);
+
+    if (color != TrafficLight.none) {
+      Color fillColor;
+      switch (color) {
+        case TrafficLight.red:
+          fillColor = Colors.red;
+        case TrafficLight.green:
+          fillColor = Colors.green;
+        case TrafficLight.yellow:
+          fillColor = Colors.yellow;
+        default:
+          fillColor = Colors.white;
+      }
+      Paint fillPaint = Paint()
+        ..color = fillColor
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(Offset(20, 20), 20, fillPaint);
+    }
   }
 
   @override
