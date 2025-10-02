@@ -34,7 +34,7 @@ class TrafficLightPage extends StatelessWidget {
           width: 100,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 5,
+            spacing: 15,
             children: <Widget>[
               const Text('Traffic Lights'),
               TrafficLights(),
@@ -59,6 +59,9 @@ class TrafficLights extends StatelessWidget {
 
 class LightCircle extends CustomPaint {
   LightCircle({super.key}) : super(painter: LightCirclePainter());
+
+  @override
+  Size get size => Size(40, 40);
 }
 
 class LightCirclePainter extends CustomPainter {
@@ -69,7 +72,7 @@ class LightCirclePainter extends CustomPainter {
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
-    canvas.drawCircle(Offset(10, 10), 20, paint);
+    canvas.drawCircle(Offset(20, 20), 20, paint);
   }
 
   @override
@@ -102,11 +105,21 @@ class _StartStopButtonState extends State<StartStopButton> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      style: ButtonStyle(
+        alignment: AlignmentGeometry.center,
+        padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(
+          EdgeInsetsGeometry.directional(start: 5, end: 5),
+        ),
+      ),
       onPressed: () {
         widget.onPressed();
         toggleState();
       },
-      child: Row(spacing: 5, children: [_buttonIcon, Text(_buttonText)]),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 5,
+        children: [_buttonIcon, Text(_buttonText)],
+      ),
     );
   }
 }
