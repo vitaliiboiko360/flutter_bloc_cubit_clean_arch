@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -47,12 +49,58 @@ class TrafficLightPage extends StatelessWidget {
   }
 }
 
-class TrafficLights extends StatelessWidget {
+class TrafficLights extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => TrafficLightsState();
+}
+
+class TrafficLightsState extends State<TrafficLights> {
+  Timer? _timer;
+  int _seconds = -1;
+  bool isActiveRed = false;
+  bool isActiveYellow = false;
+  bool isActiveGreen = false;
+
+  void changeActiveColor(int numberOfSeconds) {
+    switch (numberOfSeconds) {
+      case 0:
+        isActiveRed = true;
+        isActiveGreen = isActiveYellow = false;
+      case 1:
+        isActiveYellow = true;
+        isActiveRed = isActiveGreen = false;
+      case 2:
+        isActiveGreen = true;
+        isActiveYellow = isActiveRed = false;
+    }
+  }
+
+  @override
+  void initState() {
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      _seconds = ((_seconds + 1) % 3);
+      setState(() {
+        changeActiveColor(_seconds);
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       spacing: 10,
-      children: [redLight(), yellowLight(), greenLight()],
+      children: [
+        trafficLight(TrafficLight.red, isActiveRed),
+        trafficLight(TrafficLight.yellow, isActiveYellow),
+        trafficLight(TrafficLight.green, isActiveGreen),
+      ],
     );
   }
 }
@@ -60,6 +108,9 @@ class TrafficLights extends StatelessWidget {
 var redLight = () => TrafficLightColor(TrafficLight.red);
 var greenLight = () => TrafficLightColor(TrafficLight.green);
 var yellowLight = () => TrafficLightColor(TrafficLight.yellow);
+var noneLight = () => TrafficLightColor(TrafficLight.none);
+var trafficLight = (TrafficLight lightColor, bool isActive) =>
+    isActive ? TrafficLightColor(lightColor) : noneLight();
 
 class TrafficLightColor extends StatelessWidget {
   TrafficLightColor(this.color, {super.key});
