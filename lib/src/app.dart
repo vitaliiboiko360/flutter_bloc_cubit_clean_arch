@@ -50,13 +50,16 @@ class TrafficLightPage extends StatelessWidget {
 }
 
 class TrafficLights extends StatefulWidget {
+  const TrafficLights({super.key});
+
   @override
   State<StatefulWidget> createState() => TrafficLightsState();
 }
 
 class TrafficLightsState extends State<TrafficLights> {
+  final Stopwatch _stopwatch = Stopwatch();
   Timer? _timer;
-  int _seconds = -1;
+  int _position = -1;
   bool isActiveRed = false;
   bool isActiveYellow = false;
   bool isActiveGreen = false;
@@ -72,16 +75,42 @@ class TrafficLightsState extends State<TrafficLights> {
       case 2:
         isActiveGreen = true;
         isActiveYellow = isActiveRed = false;
+      default:
     }
+  }
+
+  void updateColor() {
+    Duration dur = _stopwatch.elapsed;
+    if (dur.inSeconds < 1) {
+      return;
+    }
+    _stopwatch.reset();
+    _position = ((_position + 1) % 3);
+    setState(() {
+      print('pos:::  $_position');
+      switch (_position) {
+        case 0:
+          isActiveRed = true;
+          isActiveGreen = false;
+          isActiveYellow = false;
+        case 1:
+          isActiveYellow = true;
+          isActiveRed = false;
+          isActiveGreen = false;
+        case 2:
+          isActiveGreen = true;
+          isActiveYellow = false;
+          isActiveRed = false;
+        default:
+      }
+    });
   }
 
   @override
   void initState() {
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
-      _seconds = ((_seconds + 1) % 3);
-      setState(() {
-        changeActiveColor(_seconds);
-      });
+    _stopwatch.start();
+    _timer = Timer.periodic(Duration(milliseconds: 30), (Timer timer) {
+      updateColor();
     });
     super.initState();
   }
@@ -160,7 +189,7 @@ class LightCirclePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(LightCirclePainter oldDelegate) => false;
+  bool shouldRepaint(LightCirclePainter oldDelegate) => true;
 }
 
 class StartStopButton extends StatefulWidget {
