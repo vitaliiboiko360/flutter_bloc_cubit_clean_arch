@@ -30,14 +30,17 @@ class TrafficLightPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 5,
-          children: <Widget>[
-            const Text('Traffic Lights'),
-            Text('', style: Theme.of(context).textTheme.headlineMedium),
-            StartStopButton(),
-          ],
+        child: SizedBox(
+          width: 100,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 5,
+            children: <Widget>[
+              const Text('Traffic Lights'),
+              TrafficLights(),
+              StartStopButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -47,12 +50,15 @@ class TrafficLightPage extends StatelessWidget {
 class TrafficLights extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(children: [LightCircle(), LightCircle(), LightCircle()]);
+    return Column(
+      spacing: 10,
+      children: [LightCircle(), LightCircle(), LightCircle()],
+    );
   }
 }
 
 class LightCircle extends CustomPaint {
-  LightCircle() : super(painter: LightCirclePainter());
+  LightCircle({super.key}) : super(painter: LightCirclePainter());
 }
 
 class LightCirclePainter extends CustomPainter {
