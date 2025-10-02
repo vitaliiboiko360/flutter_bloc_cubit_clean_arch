@@ -64,17 +64,20 @@ class TrafficLightsState extends State<TrafficLights> {
   bool isActiveYellow = false;
   bool isActiveGreen = false;
 
-  void changeActiveColor(int numberOfSeconds) {
-    switch (numberOfSeconds) {
+  void changeActiveColor(int position) {
+    switch (_position) {
       case 0:
         isActiveRed = true;
-        isActiveGreen = isActiveYellow = false;
+        isActiveGreen = false;
+        isActiveYellow = false;
       case 1:
         isActiveYellow = true;
-        isActiveRed = isActiveGreen = false;
+        isActiveRed = false;
+        isActiveGreen = false;
       case 2:
         isActiveGreen = true;
-        isActiveYellow = isActiveRed = false;
+        isActiveYellow = false;
+        isActiveRed = false;
       default:
     }
   }
@@ -87,22 +90,7 @@ class TrafficLightsState extends State<TrafficLights> {
     _stopwatch.reset();
     _position = ((_position + 1) % 3);
     setState(() {
-      print('pos:::  $_position');
-      switch (_position) {
-        case 0:
-          isActiveRed = true;
-          isActiveGreen = false;
-          isActiveYellow = false;
-        case 1:
-          isActiveYellow = true;
-          isActiveRed = false;
-          isActiveGreen = false;
-        case 2:
-          isActiveGreen = true;
-          isActiveYellow = false;
-          isActiveRed = false;
-        default:
-      }
+      changeActiveColor(_position);
     });
   }
 
