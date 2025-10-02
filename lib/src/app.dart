@@ -79,6 +79,7 @@ class TrafficLightsState extends State<TrafficLights> {
         isActiveYellow = false;
         isActiveRed = false;
       default:
+        isActiveRed = isActiveYellow = isActiveGreen = false;
     }
   }
 
@@ -181,8 +182,8 @@ class LightCirclePainter extends CustomPainter {
 }
 
 class StartStopButton extends StatefulWidget {
-  StartStopButton({onPressed, super.key});
-  VoidCallback onPressed = () {};
+  StartStopButton({this.onPressed, super.key});
+  VoidCallback? onPressed = () {};
   @override
   State<StatefulWidget> createState() => _StartStopButtonState();
 }
@@ -213,7 +214,7 @@ class _StartStopButtonState extends State<StartStopButton> {
         ),
       ),
       onPressed: () {
-        widget.onPressed();
+        widget.onPressed!();
         toggleState();
       },
       child: Row(
@@ -224,6 +225,8 @@ class _StartStopButtonState extends State<StartStopButton> {
     );
   }
 }
+
+enum TraffiLightPosition { red, yellow, green }
 
 enum TrafficLight {
   none('none'),
