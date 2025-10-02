@@ -52,22 +52,27 @@ class TrafficLights extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       spacing: 10,
-      children: [LightCircle(), LightCircle(), LightCircle()],
+      children: [redLight(), yellowLight(), greenLight()],
     );
   }
 }
 
+var redLight = () => TrafficLightColor(TrafficLight.red);
+var greenLight = () => TrafficLightColor(TrafficLight.green);
+var yellowLight = () => TrafficLightColor(TrafficLight.yellow);
+
 class TrafficLightColor extends StatelessWidget {
-  TrafficLightColor({color, super.key});
+  TrafficLightColor(this.color, {super.key});
   TrafficLight color = TrafficLight.none;
   @override
   Widget build(BuildContext context) {
-    return LightCircle();
+    return LightCircle(color: color);
   }
 }
 
 class LightCircle extends CustomPaint {
-  LightCircle({color, super.key}) : super(painter: LightCirclePainter(color));
+  LightCircle({required color, super.key})
+    : super(painter: LightCirclePainter(color));
 
   @override
   Size get size => Size(40, 40);
