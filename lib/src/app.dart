@@ -47,11 +47,27 @@ class TrafficLightPage extends StatelessWidget {
 class TrafficLights extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-
-      ],
-    );
+    return Column(children: [LightCircle(), LightCircle(), LightCircle()]);
   }
+}
+
+class LightCircle extends CustomPaint {
+  LightCircle() : super(painter: LightCirclePainter());
+}
+
+class LightCirclePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    canvas.drawCircle(Offset(10, 10), 20, paint);
+  }
+
+  @override
+  bool shouldRepaint(LightCirclePainter oldDelegate) => false;
 }
 
 class StartStopButton extends StatefulWidget {
