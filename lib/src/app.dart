@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc_cubit_clean_arch/repository/traffic_light_repository.dart';
 
 const titleApp = 'Flutter Bloc Cubit Clean Arch';
 const titlePage = 'Flutter Traffic Light Page';
+
+const trafficLightRepository = MockTrafficLightRepository();
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -60,6 +63,7 @@ class TrafficLightsState extends State<TrafficLights> {
   final Stopwatch _stopwatch = Stopwatch();
   Timer? _timer;
   int _position = -1;
+  Duration _duration = Duration.zero;
   bool isActiveRed = false;
   bool isActiveYellow = false;
   bool isActiveGreen = false;
@@ -84,12 +88,14 @@ class TrafficLightsState extends State<TrafficLights> {
   }
 
   void updateColor() {
-    Duration dur = _stopwatch.elapsed;
-    if (dur.inSeconds < 1) {
+    Duration timeElapsed = _stopwatch.elapsed;
+    if (timeElapsed < _duration) {
       return;
     }
     _stopwatch.reset();
     _position = ((_position + 1) % 3);
+    TrafficLight trafficLight = TrafficLight.getColorFromPosition(_position);
+    _duration = trafficLightRepository.getLightDuration(trafficLight);
     setState(() {
       changeActiveColor(_position);
     });
@@ -233,6 +239,19 @@ enum TrafficLight {
   red('red'),
   yellow('yellow'),
   green('green');
+
+  static TrafficLight getColorFromPosition(int position) {
+    switch (position) {
+      case 0:
+        return TrafficLight.red;
+      case 1:
+        return TrafficLight.yellow;
+      case 2:
+        return TrafficLight.green;
+      default:
+        return TrafficLight.none;
+    }
+  }
 
   const TrafficLight(this.name);
   final String name;
