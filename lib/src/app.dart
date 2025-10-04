@@ -94,11 +94,24 @@ class TrafficLightsState extends State<TrafficLights> {
     }
     _stopwatch.reset();
     _position = ((_position + 1) % 3);
-    TrafficLight trafficLight = TrafficLight.getColorFromPosition(_position);
+    TrafficLight trafficLight = _getColorFromPosition(_position);
     _duration = trafficLightRepository.getLightDuration(trafficLight);
     setState(() {
       changeActiveColor(_position);
     });
+  }
+
+  TrafficLight _getColorFromPosition(int position) {
+    switch (position) {
+      case 0:
+        return TrafficLight.red;
+      case 1:
+        return TrafficLight.yellow;
+      case 2:
+        return TrafficLight.green;
+      default:
+        return TrafficLight.none;
+    }
   }
 
   @override
@@ -240,19 +253,6 @@ enum TrafficLight {
   yellow('yellow'),
   green('green');
 
-  static TrafficLight getColorFromPosition(int position) {
-    switch (position) {
-      case 0:
-        return TrafficLight.red;
-      case 1:
-        return TrafficLight.yellow;
-      case 2:
-        return TrafficLight.green;
-      default:
-        return TrafficLight.none;
-    }
-  }
-
   const TrafficLight(this.name);
   final String name;
 }
@@ -261,15 +261,6 @@ class TrafficLightState {
   TrafficLightState();
   final TrafficLight _trafficLight = TrafficLight.none;
   TrafficLight get trafficLight => _trafficLight;
-}
-
-class TrafficLightSequence {
-  final List<TrafficLight> sequence = [
-    TrafficLight.red,
-    TrafficLight.yellow,
-    TrafficLight.green,
-    TrafficLight.yellow,
-  ];
 }
 
 class TrafficLightCubit extends Cubit<TrafficLightState> {
