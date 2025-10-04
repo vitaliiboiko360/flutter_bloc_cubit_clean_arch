@@ -2,6 +2,7 @@ import 'package:flutter_bloc_cubit_clean_arch/src/app.dart';
 
 abstract interface class TrafficLightRepository {
   Duration getLightDuration(TrafficLight color);
+  List<TrafficLight> getSequnce();
 }
 
 class MockTrafficLightRepository implements TrafficLightRepository {
@@ -21,4 +22,12 @@ class MockTrafficLightRepository implements TrafficLightRepository {
     }
     return Duration(seconds: durationInSeconds);
   }
+
+  @override
+  List<TrafficLight> getSequnce() => [
+    TrafficLight.red,
+    TrafficLight.yellow,
+    TrafficLight.green,
+    TrafficLight.yellow,
+  ];
 }
