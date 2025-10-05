@@ -60,6 +60,7 @@ class TrafficLights extends StatefulWidget {
 }
 
 class TrafficLightsState extends State<TrafficLights> {
+  final _numberOfLights = 3;
   final Stopwatch _stopwatch = Stopwatch();
   Timer? _timer;
   int _position = -1;
@@ -93,7 +94,7 @@ class TrafficLightsState extends State<TrafficLights> {
       return;
     }
     _stopwatch.reset();
-    _position = ((_position + 1) % 3);
+    _position = ((_position + 1) % _numberOfLights);
     TrafficLight trafficLight = _getColorFromPosition(_position);
     _duration = trafficLightRepository.getLightDuration(trafficLight);
     setState(() {
