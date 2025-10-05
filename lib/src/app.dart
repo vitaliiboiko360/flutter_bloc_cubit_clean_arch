@@ -209,8 +209,8 @@ class StartStopButton extends StatefulWidget {
 }
 
 class _StartStopButtonState extends State<StartStopButton> {
-  static String startText = "Start";
-  static String stopText = "Stop";
+  static final String startText = "Start";
+  static final String stopText = "Stop";
 
   bool _isStarted = false;
   String _buttonText = startText;
