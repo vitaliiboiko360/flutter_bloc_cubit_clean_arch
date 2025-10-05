@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc_cubit_clean_arch/domain/traffic_light_domain.dart';
 import 'package:flutter_bloc_cubit_clean_arch/repository/traffic_light_repository.dart';
 
 const titleApp = 'Flutter Bloc Cubit Clean Arch';
@@ -244,26 +244,4 @@ class _StartStopButtonState extends State<StartStopButton> {
       ),
     );
   }
-}
-
-enum TraffiLightPosition { red, yellow, green }
-
-enum TrafficLight {
-  none('none'),
-  red('red'),
-  yellow('yellow'),
-  green('green');
-
-  const TrafficLight(this.name);
-  final String name;
-}
-
-class TrafficLightState {
-  TrafficLightState();
-  final TrafficLight _trafficLight = TrafficLight.none;
-  TrafficLight get trafficLight => _trafficLight;
-}
-
-class TrafficLightCubit extends Cubit<TrafficLightState> {
-  TrafficLightCubit() : super(TrafficLightState());
 }
