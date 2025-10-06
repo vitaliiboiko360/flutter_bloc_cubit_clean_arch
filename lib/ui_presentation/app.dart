@@ -40,11 +40,7 @@ class TrafficLightPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 15,
-            children: <Widget>[
-              const Text('Traffic Lights'),
-              TrafficLights(),
-              StartStopButton(),
-            ],
+            children: <Widget>[const Text('Traffic Lights'), TrafficLights()],
           ),
         ),
       ),
@@ -60,7 +56,6 @@ class TrafficLights extends StatefulWidget {
 }
 
 class TrafficLightsState extends State<TrafficLights> {
-  final _numberOfLights = 3;
   final Stopwatch _stopwatch = Stopwatch();
   Timer? _timer;
   int _position = -1;
@@ -69,17 +64,17 @@ class TrafficLightsState extends State<TrafficLights> {
   bool isActiveYellow = false;
   bool isActiveGreen = false;
 
-  void changeActiveColor(int position) {
-    switch (_position) {
-      case 0:
+  void changeActiveColor(TrafficLight activeColor) {
+    switch (activeColor) {
+      case TrafficLight.red:
         isActiveRed = true;
         isActiveGreen = false;
         isActiveYellow = false;
-      case 1:
+      case TrafficLight.yellow:
         isActiveYellow = true;
         isActiveRed = false;
         isActiveGreen = false;
-      case 2:
+      case TrafficLight.green:
         isActiveGreen = true;
         isActiveYellow = false;
         isActiveRed = false;
@@ -94,25 +89,17 @@ class TrafficLightsState extends State<TrafficLights> {
       return;
     }
     _stopwatch.reset();
-    _position = ((_position + 1) % _numberOfLights);
-    TrafficLight trafficLight = _getColorFromPosition(_position);
+    TrafficLight trafficLight = _getCurrentColorToLight();
     _duration = trafficLightRepository.getLightDuration(trafficLight);
     setState(() {
-      changeActiveColor(_position);
+      changeActiveColor(trafficLight);
     });
   }
 
-  TrafficLight _getColorFromPosition(int position) {
-    switch (position) {
-      case 0:
-        return TrafficLight.red;
-      case 1:
-        return TrafficLight.yellow;
-      case 2:
-        return TrafficLight.green;
-      default:
-        return TrafficLight.none;
-    }
+  TrafficLight _getCurrentColorToLight() {
+    var sequence = trafficLightRepository.getSequnce();
+    _position = (_position + 1) % sequence.length;
+    return sequence[_position];
   }
 
   @override
@@ -138,6 +125,11 @@ class TrafficLightsState extends State<TrafficLights> {
         trafficLight(TrafficLight.red, isActiveRed),
         trafficLight(TrafficLight.yellow, isActiveYellow),
         trafficLight(TrafficLight.green, isActiveGreen),
+        StartStopButton(
+          onPressed: () {
+            _stopwatch.isRunning ? _stopwatch.stop() : _stopwatch.start();
+          },
+        ),
       ],
     );
   }
@@ -198,7 +190,8 @@ class LightCirclePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(LightCirclePainter oldDelegate) => true;
+  bool shouldRepaint(LightCirclePainter oldDelegate) =>
+      color != oldDelegate.color;
 }
 
 class StartStopButton extends StatefulWidget {
@@ -209,8 +202,8 @@ class StartStopButton extends StatefulWidget {
 }
 
 class _StartStopButtonState extends State<StartStopButton> {
-  static final String startText = "Start";
-  static final String stopText = "Stop";
+  static final String startText = "Started";
+  static final String stopText = "Paused";
 
   bool _isStarted = false;
   String _buttonText = startText;
@@ -226,21 +219,24 @@ class _StartStopButtonState extends State<StartStopButton> {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        alignment: AlignmentGeometry.center,
-        padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(
-          EdgeInsetsGeometry.directional(start: 5, end: 5),
+    return Padding(
+      padding: EdgeInsetsGeometry.directional(top: 5),
+      child: ElevatedButton(
+        style: ButtonStyle(
+          alignment: AlignmentGeometry.center,
+          padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(
+            EdgeInsetsGeometry.directional(start: 5, end: 5),
+          ),
         ),
-      ),
-      onPressed: () {
-        widget.onPressed!();
-        toggleState();
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        spacing: 5,
-        children: [_buttonIcon, Text(_buttonText)],
+        onPressed: () {
+          widget.onPressed!();
+          toggleState();
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 5,
+          children: [_buttonIcon, Text(_buttonText)],
+        ),
       ),
     );
   }
