@@ -63,6 +63,10 @@ class TrafficLightColor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tlc = BlocProvider.of<TrafficLightCubit>(context, listen: true);
+    if (color == TrafficLight.yellow &&
+        tlc.state.trafficLight == TrafficLight.yellow) {
+      return BlinkingYellow();
+    }
     return LightCircle(color: getColorToLight(tlc.state.trafficLight));
   }
 }
@@ -73,6 +77,73 @@ class LightCircle extends CustomPaint {
 
   @override
   Size get size => Size(40, 40);
+}
+
+class BlinkingYellow extends StatefulWidget {
+  const BlinkingYellow({super.key});
+  @override
+  State<StatefulWidget> createState() => _BlinkingYellowState();
+}
+
+class _BlinkingYellowState extends State<BlinkingYellow>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 100),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return CustomPaint(
+          painter: BlinkingYellowPainter(_animation.value),
+          size: Size(40, 40),
+        );
+      },
+    );
+  }
+}
+
+class BlinkingYellowPainter extends CustomPainter {
+  final double animationValue;
+
+  BlinkingYellowPainter(this.animationValue);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+    canvas.drawCircle(Offset(20, 20), 20, paint);
+    final paintFill = Paint()
+      ..color = Colors.yellow.withValues(alpha: animationValue)
+      ..style = PaintingStyle.fill;
+
+    canvas.drawCircle(Offset(20, 20), 20, paintFill);
+  }
+
+  @override
+  bool shouldRepaint(covariant BlinkingYellowPainter oldDelegate) {
+    return oldDelegate.animationValue != animationValue;
+  }
 }
 
 class LightCirclePainter extends CustomPainter {

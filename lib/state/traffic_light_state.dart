@@ -12,18 +12,20 @@ const trafficLightRepository = MockTrafficLightRepository();
 @freezed
 class TrafficLightState with _$TrafficLightState {
   TrafficLightState({this.trafficLight = TrafficLight.none});
+  @override
   final TrafficLight trafficLight;
 }
 
 class TrafficLightCubit extends Cubit<TrafficLightState> {
   TrafficLightCubit() : super(TrafficLightState()) {
     _timer = Timer.periodic(Duration(milliseconds: 30), (Timer timer) {
-      _updateColor();
+      updateColor();
     });
     _stopwatch.start();
   }
 
   // for unit tests
+  @visibleForTesting
   factory TrafficLightCubit.createForTests() {
     return TrafficLightCubit()..startStop();
   }
@@ -36,7 +38,8 @@ class TrafficLightCubit extends Cubit<TrafficLightState> {
   TrafficLight getNextActiveColor() => trafficLightRepository
       .getSequnce()[(++_position) % trafficLightRepository.getSequnce().length];
 
-  void _updateColor() {
+  @visibleForTesting
+  void updateColor() {
     Duration timeElapsed = _stopwatch.elapsed;
     if (timeElapsed < _duration) {
       return;

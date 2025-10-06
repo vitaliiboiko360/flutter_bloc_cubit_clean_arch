@@ -18,9 +18,12 @@ void main() {
     'changed state',
     build: () => trafficLightCubit,
     act: (bloc) async {
-      bloc.startStop();
+      bloc.updateColor();
       await Future.delayed(Duration(seconds: 1));
     },
-    verify: (bloc) => bloc.state.trafficLight == TrafficLight.none,
+    verify: (bloc) =>
+        bloc.state.trafficLight == TrafficLight.red ||
+        bloc.state.trafficLight == TrafficLight.yellow ||
+        bloc.state.trafficLight == TrafficLight.green,
   );
 }
