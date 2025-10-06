@@ -1,5 +1,4 @@
 import 'package:flutter_bloc_cubit_clean_arch/domain/traffic_light_domain.dart';
-import 'package:flutter_bloc_cubit_clean_arch/ui_presentation/app.dart';
 
 abstract interface class TrafficLightRepository {
   Duration getLightDuration(TrafficLight color);
