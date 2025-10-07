@@ -35,8 +35,11 @@ class TrafficLightCubit extends Cubit<TrafficLightState> {
   Timer? _timer;
   Duration _duration = Duration.zero;
 
-  TrafficLight getNextActiveColor() => trafficLightRepository
-      .getSequnce()[(++_position) % trafficLightRepository.getSequnce().length];
+  TrafficLight _getNextActiveColor() {
+    final sequence = trafficLightRepository.getSequence();
+    _position = (_position + 1) % sequence.length;
+    return sequence[_position];
+  }
 
   @visibleForTesting
   void updateColor() {
@@ -45,7 +48,7 @@ class TrafficLightCubit extends Cubit<TrafficLightState> {
       return;
     }
     _stopwatch.reset();
-    TrafficLight trafficLight = getNextActiveColor();
+    TrafficLight trafficLight = _getNextActiveColor();
     _duration = trafficLightRepository.getLightDuration(trafficLight);
     emit(state.copyWith(trafficLight: trafficLight));
   }
